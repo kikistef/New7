@@ -1897,7 +1897,7 @@
                     ["==", ["geometry-type"], "Polygon"]
                 ],
                 "technique": "extruded-polygon",
-                "minZoomLevel": 16,
+                "minZoomLevel": 15,
                 "renderOrder": 2000,
                 "color": "#494B4C",
                 "opacity": 0.85,
@@ -1909,7 +1909,7 @@
                 "footprint": true,
                 "maxSlope": 0.8799999999999999,
                 "lineWidth": 1,
-                "lineColor": "#FFF4BF",
+                "lineColor": "#000",
                 "lineColorMix": 0.1,
                 "fadeNear": 0.1,
                 "fadeFar": 1,

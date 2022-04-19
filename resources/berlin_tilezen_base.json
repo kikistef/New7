@@ -2279,7 +2279,7 @@
                 "technique": "text",
                 "renderOrder": 100,
                 "color": "#A9A9A9",
-                "label": "addr_housenumber",
+                
                 "size": 14.4,
                 "opacity": 0.6,
                 "fadeNear": 0.9,

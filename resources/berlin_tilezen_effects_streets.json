@@ -95,7 +95,7 @@
                 "technique": "solid-line",
                 "renderOrder": 10,
                 "final": true,
-                "color": "#333334",
+                "color": "#ff6600",
                 "lineWidth": ["interpolate", ["linear"], ["zoom"], 13, 1.5, 14, 1.2, 15, 0.9],
                 "fadeNear": 0.8,
                 "fadeFar": 0.9,
@@ -459,13 +459,13 @@
                 "technique": "solid-line",
                 "renderOrder": 15.4,
                 "final": true,
-                "color": "#0463b4",
+                "color": "#f2f2f2",
                 "lineWidth": [
                     "interpolate",
                     ["linear"],
                     ["zoom"],
                     5,
-                    830,
+                    100,
                     6,
                     550,
                     7,
@@ -483,12 +483,18 @@
                     13,
                     8,
                     14,
-                    6
+                    10
                 ],
                 "fadeNear": 0.8,
                 "fadeFar": 0.9,
                 "clipping": false
             },
+			
+			
+			
+			
+			
+			
             {
                 "description": "ferry",
                 "when": [
@@ -860,7 +866,7 @@
                 "technique": "dashed-line",
                 "renderOrder": 5.15,
                 "final": true,
-                "color": "#454648",
+                "color": "#ff6600",
                 "dashSize": ["step", ["zoom"], 100, 11, 40, 12, 24, 13, 30, 14, 25, 15, 15, 16, 8],
                 "gapSize": ["step", ["zoom"], 100, 11, 40, 12, 24, 13, 30, 14, 25, 15, 15, 16, 8],
                 "lineWidth": ["interpolate", ["linear"], ["zoom"], 13, 2.75, 14, 1.75]
@@ -1232,7 +1238,7 @@
                     ["==", ["geometry-type"], "Polygon"],
                     ["==", ["get", "kind"], "urban"]
                 ],
-                "technique": "fill",
+                "technique": "none",
                 "renderOrder": 0,
                 "opacity": 0.8,
                 "color": "#3B3E45"
@@ -1247,7 +1253,7 @@
                 ],
                 "technique": "none",
                 "renderOrder": 0.1,
-                "color": "#3B3E45"
+                "color": "#ff6600"
             },
             {
                 "description": "park",
@@ -1277,7 +1283,7 @@
                         ]
                     ]
                 ],
-                "technique": "fill",
+                "technique": "none",
                 "renderOrder": 0.2,
                 "color": "#373A40"
             },
@@ -1450,7 +1456,7 @@
                 "color": "#3B3E45",
                 "backgroundColor": "#000000",
                 "fontVariant": "SmallCaps",
-                "opacity": 0.6
+                "opacity": 1
             },
             {
                 "description": "Earth layer",
@@ -1905,7 +1911,7 @@
                 "color": "#494B4C",
                 "opacity": 0.85,
                 "defaultHeight": 1,
-                "roughness": 1,
+                "roughness": 0.5,
                 "metalness": 0.9,
                 "emissive": "#383C45",
                 "emissiveIntensity": 0.5,

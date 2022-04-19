@@ -1277,7 +1277,7 @@
                         ]
                     ]
                 ],
-                "technique": "fill",
+                "technique": "none",
                 "renderOrder": 0.2,
                 "color": "#bf4c00"
             },
