@@ -72916,6 +72916,7 @@ exports.map = void 0;
  
 ------------------- trajet porte de maillot Paris -------------------
  */
+console.log("version 7.1.1 by kikistef");
 __webpack_require__(/*! three/examples/js/controls/TrackballControls */ "./node_modules/three/examples/js/controls/TrackballControls.js");
 const harp_geoutils_1 = __webpack_require__(/*! @here/harp-geoutils */ "./node_modules/@here/harp-geoutils/index.js");
 const harp_map_controls_1 = __webpack_require__(/*! @here/harp-map-controls */ "./node_modules/@here/harp-map-controls/index.js");
@@ -75378,6 +75379,7 @@ function touchStart() {
         alert("double");
     }
 }
+touchStart();
 /////////////////////////////fonction de mouvement de camera//////////////////////////
 function startTransition(mapView, location) {
     const startPosition = mapView.camera.position.clone(); //permet le déplacement sur les axes
