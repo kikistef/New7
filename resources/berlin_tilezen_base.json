@@ -90,7 +90,7 @@
     },
     "fog": {
         "color": "#DDDCDA",
-        "startRatio": 0.8
+        "startRatio": 0.5
     },
     "clearColor": "#87959A",
     "lights": [
