@@ -73153,7 +73153,7 @@ function initializeMapView(id /*, theme: Theme*/) {
         MAX_SUN_INTENSITY = sun.intensity;
         MAIN_SUN_COLOR.copy(sun.color);
         mapView.addEventListener(harp_mapview_1.MapViewEventNames.MovementFinished, update);
-        addGuiElements();
+        //addGuiElements();
         setupDebugStuff();
         update();
     });
@@ -73167,10 +73167,16 @@ const addVectorTileDataSource = () => {
     });
     return mapView.addDataSource(omvDataSource);
 };
+function removeGuiElements() {
+    customContainer.removeChild(gui.domElement);
+}
+var customContainer;
+var gui;
 function addGuiElements() {
     // Control light direction
-    const gui = new dat_gui_1.GUI({ width: 300, autoPlace: false });
-    var customContainer = document.getElementById('my-gui-container');
+    gui = new dat_gui_1.GUI({ width: 300, autoPlace: false });
+    gui.opened = true;
+    customContainer = document.getElementById('my-gui-container');
     customContainer.appendChild(gui.domElement);
     const themeFolder = gui.addFolder('Themes');
     const optionsTheme = {
@@ -73210,7 +73216,6 @@ function addGuiElements() {
     const timeSlider = timeFolder.add(guiOptions, "time", 0, 24, 0.01);
     const timeIndicator = timeFolder.add(guiOptions, "timeIndicator");
     timeFolder.open();
-    const FOV = gui.add(guiOptions, "FOV", 0, 100, 1).onChange(updateRendering);
     //const Dropshadows = gui.add(guiOptions,  "Dropshadows");
     timeSlider.onChange(() => {
         guiOptions.hours = Math.floor(guiOptions.time);
@@ -73234,7 +73239,9 @@ function addGuiElements() {
              mapView.addDataSource(hereWebTileDataSource);
          }
      });*/
-    gui.add(guiOptions, "textureSquareSize", 128, 512, 32).onChange(size => {
+    const CameraFolder = gui.addFolder('Camera');
+    const FOV = CameraFolder.add(guiOptions, "FOV", 0, 100, 1).onChange(updateRendering);
+    CameraFolder.add(guiOptions, "textureSquareSize", 128, 512, 32).onChange(size => {
         sun.shadow.mapView.dispose();
         sun.shadow.mapView = null;
         sun.shadow.mapSize.width = size;
@@ -74263,9 +74270,9 @@ async function getLineConcorde() {
                             8, "0.005px",
                             9, "0.01px",
                             13, "0.05px",
-                            14, "0.1px",
-                            15, "0.45px",
-                            16, "3px",
+                            14, "1px",
+                            15, "2px",
+                            16, "5px",
                             17, "6px",
                             18, "19px",
                             19, "60px",
@@ -74350,7 +74357,7 @@ async function getLineConcorde() {
                     //hoverColor: "#ff0000",
                     renderOrder: 10000,
                     attr: {
-                        color: "#5bb4e7",
+                        color: "#fff",
                         //opacity: 0.5,
                         metricUnit: "Pixel",
                         lineWidth: [
@@ -74365,7 +74372,7 @@ async function getLineConcorde() {
                             13, "0.2px",
                             14, "0.4px",
                             15, "0.9px",
-                            16, "4px",
+                            16, "8px",
                             17, "8px",
                             18, "23px",
                             19, "90px",
@@ -75015,20 +75022,25 @@ function moveEgo() {
     var convArrayLS2 = turf.lineString(convArray2);
     var convArrayDist = turf.lineDistance(convArrayLS2);
     value.textContent = String(convArrayDist.toFixed(2) + " km");
-    distanceContainer.appendChild(value);
+    value1.textContent = String("speed x " + speed);
+    //	distanceContainer.appendChild(value);
+    //	speedContainer.appendChild(value1);
     if (increment < steps) {
         reqAnim = requestAnimationFrame(moveEgo);
     }
     else {
         increment = 0;
         stopEgo();
+        //egoList[1].rotateY(THREE.Math.degToRad(prevBearing-bearing));
     }
     //console.log("inc : " + convArrayLS2);
 }
 //////////////////////fonction d'arret de l'animation de l'egocar/////////////////
 var egoStop = false;
+var displayStat = false;
 function stopEgo() {
     cancelAnimationFrame(reqAnim);
+    //egoList[1].rotateY(THREE.Math.degToRad(0));
     egoStop = true;
     //speed = 0;
     //egoList[1].rotateY(THREE.Math.degToRad(prevBearing-bearing));
@@ -75053,7 +75065,7 @@ function slowEgo() {
     else {
         //meshTriangle.rotateZ(THREE.Math.degToRad((-45)));
         stopEgo();
-        speed = 0;
+        speed = 1;
     }
 }
 function rotateAroundEgoCar() {
@@ -75081,7 +75093,7 @@ var rota = false;
 var zoomLevFollowCar = 18.5;
 var follow = true;
 var memHeading = 0;
-/////////////////////////////fonction lorsqu'on clique sur "7"/////////////////
+/////////////////////////////fonction lorsqu'on clique sur "f"/////////////////
 function followEgoCar() {
     const optionsR5 = {
         target: new harp_geoutils_1.GeoCoordinates(val2, val1),
@@ -75129,10 +75141,10 @@ window.ontouchend = (ev) => {
     }
     startTransition(mapView, newLocation);
 };
+/////////////////////DEBUT TOUCHE CLAVIER/////////////////////	
 window.onkeydown = (ev) => {
     const oldLocation = locations[currentLocation];
     switch (ev.which) {
-        /////////////////////DEBUT TOUCHE CLAVIER/////////////////////				
         //touche "<- " pour passer au point de vue precedent
         case 37:
             //currentLocation--;
@@ -75175,8 +75187,9 @@ window.onkeydown = (ev) => {
         case 71:
             mapView.tilt -= 0.3;
             break;
-        //touche 0 (trajet base concorde - troca)
+        //touche ----------[ 0 ou Shift+[0à@] ]----------  (trajet base concorde - troca)
         case 96:
+        case 48:
             if (blue1Enable) {
                 EndAdd();
                 getLineConcorde();
@@ -75188,8 +75201,9 @@ window.onkeydown = (ev) => {
                 blue1Enable = true;
             }
             break;
-        //touche "1" (trajet orange concorde - parking)
+        //touche ----------[ 1 ou Shift+[1&] ]---------- (trajet orange concorde - parking)
         case 97:
+        case 49:
             if (!orangeEnable) {
                 sleepAdd();
                 getLineParking();
@@ -75202,8 +75216,9 @@ window.onkeydown = (ev) => {
                 orangeEnable = false;
             }
             break;
-        //touche "2" (trajet base parking - troca) reversible
+        //touche ----------[ 2 ou Shift+[2é~] ]---------- (trajet base parking - troca) reversible
         case 98:
+        case 50:
             if (!blue2Enable) {
                 EndAdd();
                 getLineOutParking();
@@ -75215,38 +75230,33 @@ window.onkeydown = (ev) => {
                 blue2Enable = false;
             }
             break;
-        //touche "7" reversible		
-        case 103:
-            console.log(follow);
-            if (!follow) {
-                var couleur = "#ff0000";
-                follow = true;
-                followEgoCar();
-            }
-            else if (follow) {
-                mapView.removeEventListener(harp_mapview_1.MapViewEventNames.AfterRender, followEgoCar);
-                follow = false;
-            }
-            break;
-        //touche "9" pour montrer l'ndication en overlay
+        //touche ----------[ 9 ou Shift+[9ç^]]---------- pour montrer l'ndication en overlay
         case 105:
-            var ditan = turf.lineString(lisTemp);
-            console.log("distNeuf " + turf.lineDistance(ditan));
+        case 57:
+            //var ditan = turf.lineString(lisTemp);
+            //console.log("distNeuf " + turf.lineDistance(ditan));
             //console.log("nenene : " + lisTemp.length + " -- " + lisTemp[2][0]);
-            console.log("lissst : " + lisTemp);
-            distanceContainer.appendChild(value);
+            if (!displayStat) {
+                addGuiElements();
+                //gui.visible = true;
+                distanceContainer.appendChild(value);
+                speedContainer.appendChild(value1);
+                displayStat = true;
+            }
+            else if (displayStat) {
+                //gui.visible = false;
+                removeGuiElements();
+                distanceContainer.removeChild(value);
+                speedContainer.removeChild(value1);
+                displayStat = false;
+            }
             break;
-        //touche "a" pour bouger l'ego car	
+        //touche ----------[ A ]----------  pour bouger l'ego car	
         case 65:
             console.log("a");
             //listObjectCircle[0].anchor = new GeoCoordinates( 48.86628334414011, 2.321663796901703);
             break;
-        //touche "p" pour bouger l'ego car	
-        case 80:
-            console.log("p");
-            //listObjectCircle[0].anchor = new GeoCoordinates( 48.86628334414011, 2.321663796901703);
-            break;
-        //touche "c" pour faire apparaitre/disparaitre l'ego car				
+        //touche ----------[ C ]----------  pour faire apparaitre/disparaitre l'ego car				
         case 67:
             if (!startLigne2) {
                 ligne2();
@@ -75258,7 +75268,25 @@ window.onkeydown = (ev) => {
                 var startLigne2 = false;
             }
             break;
-        //touche "r" pour bouger l'ego car	
+        //touch ----------[ F ]----------  reversible	pour suivre la voiture	
+        case 70:
+            console.log(follow);
+            if (!follow) {
+                var couleur = "#ff0000";
+                follow = true;
+                followEgoCar();
+            }
+            else if (follow) {
+                mapView.removeEventListener(harp_mapview_1.MapViewEventNames.AfterRender, followEgoCar);
+                follow = false;
+            }
+            break;
+        //touche ----------[ P ]----------  pour bouger l'ego car	
+        case 80:
+            console.log("p");
+            //listObjectCircle[0].anchor = new GeoCoordinates( 48.86628334414011, 2.321663796901703);
+            break;
+        //touche ----------[ R ]----------  pour bouger l'ego car	
         case 82:
             if (!rota) {
                 var couleur = "#ff0000";
@@ -75270,22 +75298,24 @@ window.onkeydown = (ev) => {
                 rota = false;
             }
             break;
-        //touche "s" pour bouger l'ego car			
+        //touche ----------[ S ]----------  pour bouger l'ego car			
         case 83:
             if (egoStop) {
                 follow = false;
                 stopEgo();
                 egoStop = false;
                 action.stop();
+                speed = 1;
             }
             else {
                 follow = true;
+                speed = 1;
                 moveEgo();
                 egoStop = true;
                 action.play();
             }
             break;
-        //touche "z" pour bouger l'ego car			
+        //touche ----------[ Z ]----------  pour bouger l'ego car			
         case 90:
             if (!egoEnable) {
                 console.log("convArray2 : " + convArray2.length);
@@ -75302,16 +75332,16 @@ window.onkeydown = (ev) => {
                 egoEnable = false;
             }
             break;
-        //touche "-" pour ralentir l'ego car	
+        //touche ----------[ - ]----------  pour ralentir l'ego car	
         case 109:
             slowEgo();
             break;
-        //touche "+" pour ralentir l'ego car	
+        //touche ----------[ + ]----------  pour ralentir l'ego car	
         case 107:
             accelEgo();
             break;
-        /////////////////////END TOUCHE CLAVIER/////////////////////
     }
+    /////////////////////END TOUCHE CLAVIER/////////////////////
     if (currentLocation < 0) {
         currentLocation = locations.length - 1;
     }
@@ -75329,6 +75359,24 @@ const distanceContainer = document.getElementById('distance');
 var value = document.createElement('pre');
 distanceContainer.innerHTML = "";
 value.textContent = String(length.toFixed(2) + " km");
+const speedContainer = document.getElementById('distance');
+var value1 = document.createElement('pre');
+speedContainer.innerHTML = "";
+value1.textContent = String("vitesses");
+var clickTimer = null;
+function touchStart() {
+    if (clickTimer == null) {
+        clickTimer = setTimeout(function () {
+            clickTimer = null;
+            alert("single");
+        }, 500);
+    }
+    else {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        alert("double");
+    }
+}
 /////////////////////////////fonction de mouvement de camera//////////////////////////
 function startTransition(mapView, location) {
     const startPosition = mapView.camera.position.clone(); //permet le déplacement sur les axes
