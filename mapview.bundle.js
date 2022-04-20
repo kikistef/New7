@@ -72912,6 +72912,8 @@ exports.map = void 0;
  * Copyright (C) 2019-2021 HERE Europe B.V.
  * Licensed under Apache 2.0, see full license in LICENSE
  * SPDX-License-Identifier: Apache-2.0
+ 
+------------------- trajet porte de maillot Paris -------------------
  */
 __webpack_require__(/*! three/examples/js/controls/TrackballControls */ "./node_modules/three/examples/js/controls/TrackballControls.js");
 const harp_geoutils_1 = __webpack_require__(/*! @here/harp-geoutils */ "./node_modules/@here/harp-geoutils/index.js");
@@ -72922,22 +72924,12 @@ const harp_webtile_datasource_1 = __webpack_require__(/*! @here/harp-webtile-dat
 const dat_gui_1 = __webpack_require__(/*! dat.gui */ "./node_modules/dat.gui/build/dat.gui.module.js");
 const FBXLoader_js_1 = __webpack_require__(/*! three/examples/jsm/loaders/FBXLoader.js */ "./node_modules/three/examples/jsm/loaders/FBXLoader.js");
 const THREE = __webpack_require__(/*! three */ "three");
-//import gsap from "gsap";
 const turf = __webpack_require__(/*! @turf/turf */ "./node_modules/@turf/turf/turf.min.js");
-//import lineString from "turf-linestring";
-//import { geoPlaneGeometry, geoContourGeomtry } from 'three-geojson';
-//import { View } from "./View";
 const Line2_js_1 = __webpack_require__(/*! three/examples/jsm/lines/Line2.js */ "./node_modules/three/examples/jsm/lines/Line2.js");
 const LineMaterial_js_1 = __webpack_require__(/*! three/examples/jsm/lines/LineMaterial.js */ "./node_modules/three/examples/jsm/lines/LineMaterial.js");
 const LineGeometry_js_1 = __webpack_require__(/*! three/examples/jsm/lines/LineGeometry.js */ "./node_modules/three/examples/jsm/lines/LineGeometry.js");
 //const scene = new THREE.Scene();
-/*
- * Copyright (C) 2020-2021 HERE Europe B.V.
- * Licensed under Apache 2.0, see full license in LICENSE
- * SPDX-License-Identifier: Apache-2.0
- */
 ////////////////////////fonction permettant de bouger l'egocar///////////////////
-//export namespace HelloWorldExample {
 const SunCalc = __webpack_require__(/*! suncalc */ "./node_modules/suncalc/suncalc.js");
 const FADE_DURATION = 30 * 60 * 1000; // in ms
 const COLOR_CHANGE_DURATION = 2 * FADE_DURATION; // in ms
@@ -73143,7 +73135,6 @@ function initializeMapView(id /*, theme: Theme*/) {
     mapView.mapRenderingManager.bloom = options.bloom;
     mapView.mapRenderingManager.vignette = options.vignette;
     mapView.mapRenderingManager.sepia = options.sepia;
-    //CopyrightElementHandler.install("copyrightNotice", mapView);
     mapControls = new harp_map_controls_1.MapControls(mapView);
     mapControls.maxTiltAngle = 90;
     const ui = new harp_map_controls_1.MapControlsUI(mapControls, { projectionSwitch: false, zoomLevel: "input" });
@@ -73168,20 +73159,6 @@ function initializeMapView(id /*, theme: Theme*/) {
     });
     return mapView;
 }
-/*
-    const optionsRot = {
-        target: new GeoCoordinates(48.87011831622513, 2.306553077182798),
-        tilt: 5,
-        zoomLevel: 18,
-        heading: 0,
-        //globe: true,
-        headingSpeed: 0.1
-    };
-mapView.addEventListener(MapViewEventNames.AfterRender, () => {
-    optionsRot.heading = (optionsRot.heading + optionsRot.headingSpeed) % 360;
-    mapView.lookAt(optionsRot);
-    update();
-});*/
 const addVectorTileDataSource = () => {
     const omvDataSource = new harp_vectortile_datasource_1.VectorTileDataSource({
         baseUrl: "https://vector.hereapi.com/v2/vectortiles/base/mc",
@@ -73296,7 +73273,6 @@ const options = {
 const updateRendering = () => {
     mapView.shadowsEnabled = guiOptions.Dropshadows;
     mapView.scene.fov = guiOptions.FOV; //////////a revoir
-    //mapView.
     //initializeMapView("canvas");
     //map.renderLabels = options.labels;
     console.log("fov : " + guiOptions.FOV);
@@ -74353,7 +74329,7 @@ async function getLineConcorde() {
             window.clearInterval(timer);
         }
     }, 4);*/
-    const res = await fetch("resources/mapConcorde.geojson");
+    const res = await fetch("resources/mapMaillot1.geojson");
     const data = await res.json();
     //var json1 = "resources/mapConcorde.geojson";
     var dataProvider = new harp_vectortile_datasource_1.GeoJsonDataProvider("concorde-trocadero", data);
@@ -74403,7 +74379,7 @@ async function getLineConcorde() {
             ],
         },
     };
-    //geoJsonDataSource.setTheme(theme);
+    geoJsonDataSource.setTheme(theme);
     //await mapView.addDataSource(data);
     //mapView.update();
 }
@@ -74811,6 +74787,7 @@ function updateMapAnchor() {
         if (egoList[1].scale.x !== scaleFactor2) {
             //console.log("scaleFactor : " + scaleFactor);
             egoList[1].scale.set(scaleFactor2, scaleFactor2, scaleFactor2);
+            //egoList[1].translateY(100);
             //egoList[0].scale.set(scaleFactor3, scaleFactor3, scaleFactor3);//////////////////////LA
             //meshTriangle.scale.set(scaleFactor/4, scaleFactor/4, scaleFactor);
             //egoList[2].scale.set(scaleFactor, scaleFactor, scaleFactor);
@@ -74932,7 +74909,7 @@ function addMapAnchor(mapView) {
         egoAnchor.scale.set(sizeCube10, sizeCube10, sizeCube10);
         egoAnchor.name = "circle";
         egoAnchor.anchor = CONCORD;
-        //egoAnchor.positions.y = 100;
+        //egoAnchor.positions.set(0, 100, 0);
         //figure8.material = new THREE.MeshPhysicalMaterial({ color: "#ff0000"})
         egoAnchor.overlay = false;
         egoAnchor.transparent = true;
@@ -75084,13 +75061,13 @@ function rotateAroundEgoCar() {
         target: new harp_geoutils_1.GeoCoordinates(val2, val1),
         //tilt: 45,
         //zoomLevel: 18.5,
-        heading: null,
+        //heading: null,
         globe: true,
-        headingSpeed: 0.2
+        headingSpeed: 0.1
     };
     mapView.addEventListener(harp_mapview_1.MapViewEventNames.AfterRender, () => {
         if (rota) {
-            optionsR5.heading = (optionsR5.heading + optionsR5.headingSpeed) % 360;
+            mapView.heading = (mapView.heading + optionsR5.headingSpeed) % 360;
             optionsR5.target = new harp_geoutils_1.GeoCoordinates(val2, val1);
             mapView.lookAt(optionsR5);
             mapView.update();
@@ -75408,7 +75385,7 @@ window.addEventListener("dblclick", (evt) => {
     async function getLineSaclay2() {
         //res5 = await fetch("resources/park2.geojson");
         //data5 = await res5.json();
-        const [data6] = await Promise.all([fetch("resources/maprounded.geojson").then((response) => response.json())]);
+        const [data6] = await Promise.all([fetch("resources/mapMaillot1.geojson").then((response) => response.json())]);
         /*		convArray2 = convArray2.slice(1, convArray2.length)
         var convArrayLS2 = turf.lineString(convArray2);
         var convArrayDist = turf.lineDistance(convArrayLS2);*/
@@ -75590,11 +75567,11 @@ function getStyleSet2() {
 }
 const monuments = [
     ["EIFFELimport", "eiffel", "resources/EiffelTower.fbx", 0.1, [48.858226623375815, 2.2944796063358880], 46],
-    ["OBELISKimport", "obelisk", "resources/obelisk.fbx", 0.08, [48.86547612146255, 2.321130372583866], 63],
-    ["ARCimport", "arcTriumph", "resources/arcTriomphe.fbx", 0.03, [48.87377930654804, 2.2950247675180435], 65]
+    ["OBELISKimport", "obelisk", "resources/obelisk.fbx", 0.08, [48.86547612146255, 2.321130372583866], 63] //,
+    //["ARCimport", "arcTriumph", "resources/arcTriomphe.fbx", 0.03, [48.87377930654804, 2.2950247675180435],65]
 ];
 for (var m in monuments) {
-    //AddMonuments(m);
+    AddMonuments(m);
 }
 function AddMonuments(n) {
     const sizeCube2 = monuments[n][3];
@@ -75614,8 +75591,8 @@ function AddMonuments(n) {
             if (child.isMesh) {
                 console.log(child.geometry.attributes.uv);
                 child.material = new THREE.MeshPhysicalMaterial({
-                    color: "#111",
-                    emissive: "#222",
+                    color: "#4e565a",
+                    emissive: "#010101",
                     transparent: true,
                     opacity: 0.8,
                     depthTest: true
