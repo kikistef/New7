@@ -72912,6 +72912,7 @@ exports.map = void 0;
  * Copyright (C) 2019-2021 HERE Europe B.V.
  * Licensed under Apache 2.0, see full license in LICENSE
  * SPDX-License-Identifier: Apache-2.0
+ Version 7.1
  
 ------------------- trajet porte de maillot Paris -------------------
  */
