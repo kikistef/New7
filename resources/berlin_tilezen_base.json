@@ -2249,7 +2249,7 @@
                 "description": "extruded buildings",
                 "technique": "extruded-polygon",
                 "when": ["ref", "extrudedBuildingsCondition"],
-                "minZoomLevel": 16,
+                "minZoomLevel": 14,
                 "renderOrder": 2000,
                 "height": ["get", "height"],
                 "color": ["ref", "defaultBuildingColor"],
@@ -2279,7 +2279,7 @@
                 "technique": "text",
                 "renderOrder": 100,
                 "color": "#A9A9A9",
-                
+                "label": "addr_housenumber",
                 "size": 14.4,
                 "opacity": 0.6,
                 "fadeNear": 0.9,
