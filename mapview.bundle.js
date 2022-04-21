@@ -72905,9 +72905,6 @@ var exports = __webpack_exports__;
   !*** ./index.ts ***!
   \******************/
 
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.map = void 0;
 /*
  * Copyright (C) 2019-2021 HERE Europe B.V.
  * Licensed under Apache 2.0, see full license in LICENSE
@@ -72916,7 +72913,9 @@ exports.map = void 0;
  
 ------------------- trajet porte de maillot Paris -------------------
  */
-console.log("version 7.1.1 by kikistef");
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.map = void 0;
 __webpack_require__(/*! three/examples/js/controls/TrackballControls */ "./node_modules/three/examples/js/controls/TrackballControls.js");
 const harp_geoutils_1 = __webpack_require__(/*! @here/harp-geoutils */ "./node_modules/@here/harp-geoutils/index.js");
 const harp_map_controls_1 = __webpack_require__(/*! @here/harp-map-controls */ "./node_modules/@here/harp-map-controls/index.js");
@@ -74201,6 +74200,7 @@ var array2 = turf.lineString(list2);
 var length = turf.lineDistance(array1);
 var along = turf.along(array1, 1);
 ////const numberOfPoints = Object.keys(array2).length; // obtenir le nombre de points
+console.log("version 7.1.1 by kikistef");
 const lineDistance = turf.length(array1);
 console.log("lineDistance Array1 : " + lineDistance);
 //
@@ -74271,12 +74271,14 @@ async function getLineConcorde() {
                             6, "0.003px",
                             8, "0.005px",
                             9, "0.01px",
-                            13, "0.05px",
+                            10, "0.05px",
+                            11, "0.1px",
+                            13, "0.5px",
                             14, "1px",
-                            15, "2px",
+                            15, "2.4px",
                             16, "5px",
-                            17, "6px",
-                            18, "19px",
+                            17, "10px",
+                            18, "27px",
                             19, "60px",
                             20, "200px"
                         ],
@@ -74371,12 +74373,14 @@ async function getLineConcorde() {
                             6, "0.006px",
                             8, "0.01px",
                             9, "0.02px",
-                            13, "0.2px",
-                            14, "0.4px",
-                            15, "0.9px",
+                            10, "0.1px",
+                            11, "0.2px",
+                            13, "1px",
+                            14, "2px",
+                            15, "4px",
                             16, "8px",
-                            17, "8px",
-                            18, "23px",
+                            17, "18px",
+                            18, "38px",
                             19, "90px",
                             20, "300px"
                         ],
@@ -74550,10 +74554,7 @@ function ligne2() {
     console.log("pts : " + pts);
     let matLine = new LineMaterial_js_1.LineMaterial({
         color: 0xffffff,
-        //linewidth: 5, // in pixels
         vertexColors: true,
-        //resolution:  // to be set by renderer, eventually
-        //dashed: false,
         alphaToCoverage: true,
         onBeforeCompile: shader => {
             shader.vertexShader = `
@@ -74617,9 +74618,6 @@ var nombreDefil = 0;
 async function getLineParking() {
     const res2 = await fetch("resources/park2.geojson");
     const data2 = await res2.json();
-    /*var json22 = "resources/parking1.geojson";
-    var obj22 = await Object.keys(data2).length;
-    console.log("obj22 : " + obj22);*/
     const dataProvider = new harp_vectortile_datasource_1.GeoJsonDataProvider("parking", data2);
     geoJsonDataSource2 = new harp_vectortile_datasource_1.VectorTileDataSource({
         dataProvider,
@@ -74630,8 +74628,7 @@ async function getLineParking() {
     await mapView.addDataSource(geoJsonDataSource2);
     const truc = {
         styles: {
-            geojson: [
-                {
+            geojson: [{
                     when: "$geometryType == 'line'",
                     technique: "solid-line",
                     renderOrder: 11000,
@@ -74660,9 +74657,8 @@ async function getLineParking() {
                         fadeFar: 0.9,
                         clipping: false
                     }
-                },
-            ],
-        },
+                }]
+        }
     };
     //console.log("toto ");
     geoJsonDataSource2.setTheme(truc);
@@ -74674,7 +74670,6 @@ async function getLineParking() {
     };
     //console.log("data2 " + data2.features[0].geometry.coordinates.length + " -- " );
     setInterval(animate, 1000);
-    //console.log("yyy : " + dataProvider)
 }
 ;
 function removeLineParking() {
@@ -74691,7 +74686,7 @@ async function getLineOutParking() {
     geoJsonDataSource3 = new harp_vectortile_datasource_1.VectorTileDataSource({
         dataProvider,
         name: "parkingOut",
-        styleSetName: "geojson",
+        styleSetName: "geojson"
     });
     await mapView.addDataSource(geoJsonDataSource3);
     const theme = {
@@ -74727,8 +74722,8 @@ async function getLineOutParking() {
                         clipping: false
                     }
                 },
-            ],
-        },
+            ]
+        }
     };
     geoJsonDataSource3.setTheme(theme);
 }
@@ -74786,7 +74781,7 @@ const geoPosition = {
     longitude: CONCORD.lng,
     altitude: (_a = CONCORD.altitude) !== null && _a !== void 0 ? _a : 0
 };
-function updateMapAnchor() {
+function resizeEgoCar() {
     const valGeo = { latitude: prevY, longitude: prevX };
     const ratioZoom = mapView.zoomLevel / 20;
     if (egoList[1] !== undefined && egoList[1].anchor !== undefined) {
@@ -74796,6 +74791,7 @@ function updateMapAnchor() {
         if (egoList[1].scale.x !== scaleFactor2) {
             //console.log("scaleFactor : " + scaleFactor);
             egoList[1].scale.set(scaleFactor2, scaleFactor2, scaleFactor2);
+            //egoList[1].translateY(100);
             //egoList[1].translateY(100);
             //egoList[0].scale.set(scaleFactor3, scaleFactor3, scaleFactor3);//////////////////////LA
             //meshTriangle.scale.set(scaleFactor/4, scaleFactor/4, scaleFactor);
@@ -74813,6 +74809,8 @@ function updateMapAnchor() {
     ////////////permet de retrouver le niveau de zoom
 }
 var action;
+var egoEnable = false;
+var egoList = [];
 function addCar(mapView) {
     const sizeCube8 = 0.01; // o.3 R5
     // const figureGeoPosition = new GeoCoordinates( 48.86562466026018, 2.3217665271639305);
@@ -74854,8 +74852,6 @@ function addCar(mapView) {
     return figure8;
 }
 //////////////////////////////AJOUT DU TRIANGLE DE L'EGOCAR///////////////////
-var egoEnable = false;
-var egoList = [];
 function addTriangle(mapView) {
     const triangleShape = new THREE.Shape()
         .moveTo(0, 0)
@@ -74897,6 +74893,7 @@ function addMapAnchor(mapView) {
             //child.rotateY(THREE.Math.degToRad(-25));
             child.castShadow = true;
             child.receiveShadow = true;
+            //child.translateY(200);
             /*if ( child.isMesh ) {
 
                 console.log( child.geometry.attributes.uv );
@@ -74981,19 +74978,20 @@ function egoRemove() {
     egoList = [];
 }
 ;
+function egoAdd() {
+    //figure8 = addCar(mapView);
+    mapView.addEventListener(harp_mapview_1.MapViewEventNames.Update, resizeEgoCar);
+    egoAnchor = addMapAnchor(mapView);
+    //meshTriangle = addTriangle(mapView);	
+    /**/
+}
+;
 //////////////////////////INITIALISATION DE L'EGOCAR///////////////////////////
 var egoAnchor; // = addMapAnchor(mapView);
 var meshTriangle; // = addTriangle(mapView);	
 var figure8;
 var line1;
 exports.map = initializeMapView("map");
-function triAdd() {
-    //figure8 = addCar(mapView);
-    egoAnchor = addMapAnchor(mapView);
-    //meshTriangle = addTriangle(mapView);	
-    mapView.addEventListener(harp_mapview_1.MapViewEventNames.Update, updateMapAnchor); /**/
-}
-;
 /////////////////////////FIN SECTION POUR L'EGO CAR CONSTANT AU ZOOM///////////////////////////	
 ////////////////////////////FONCTION DE DEPLACEMENT ROTATION DE L'EGOCAR///////////////////////////////
 var valAngleCar = 0;
@@ -75093,7 +75091,7 @@ function rotateAroundEgoCar() {
 }
 var rota = false;
 var zoomLevFollowCar = 18.5;
-var follow = true;
+var follow = false;
 var memHeading = 0;
 /////////////////////////////fonction lorsqu'on clique sur "f"/////////////////
 function followEgoCar() {
@@ -75112,11 +75110,11 @@ function followEgoCar() {
             memHeading += THREE.Math.radToDeg(-valAngleCar);
             //optionsR5.heading += THREE.Math.radToDeg(-valAngleCar);
             mapView.heading += THREE.Math.radToDeg(-valAngleCar);
-            console.log("memHeading : " + memHeading);
-            console.log("angle : " + THREE.Math.radToDeg(-valAngleCar));
+            //console.log("memHeading : " + memHeading);
+            //console.log("angle : " + THREE.Math.radToDeg(-valAngleCar))
             optionsR5.target = new harp_geoutils_1.GeoCoordinates(val2, val1 /*-0.00022*/);
             mapView.lookAt(optionsR5);
-            mapView.update();
+            //mapView.update();				
         }
         return;
     });
@@ -75180,14 +75178,6 @@ window.onkeydown = (ev) => {
         //touche "Fleche Bas" pour arreter le suivi et la rotation		
         case 40:
             mapView.zoomLevel -= 0.03;
-            break;
-        //touche "t" pour le tilt		
-        case 84:
-            mapView.tilt += 0.3;
-            break;
-        //touche "g" pour le tilt		
-        case 71:
-            mapView.tilt -= 0.3;
             break;
         //touche ----------[ 0 ou Shift+[0à@] ]----------  (trajet base concorde - troca)
         case 96:
@@ -75274,7 +75264,7 @@ window.onkeydown = (ev) => {
         case 70:
             console.log(follow);
             if (!follow) {
-                var couleur = "#ff0000";
+                //var couleur = "#ff0000";
                 follow = true;
                 followEgoCar();
             }
@@ -75291,12 +75281,12 @@ window.onkeydown = (ev) => {
         //touche ----------[ R ]----------  pour bouger l'ego car	
         case 82:
             if (!rota) {
-                var couleur = "#ff0000";
+                //var couleur = "#ff0000";
                 rota = true;
                 rotateAroundEgoCar();
             }
             else {
-                var couleur = "#000fff";
+                //var couleur = "#000fff";
                 rota = false;
             }
             break;
@@ -75310,6 +75300,7 @@ window.onkeydown = (ev) => {
                 speed = 1;
             }
             else {
+                resizeEgoCar();
                 follow = true;
                 speed = 1;
                 moveEgo();
@@ -75317,12 +75308,25 @@ window.onkeydown = (ev) => {
                 action.play();
             }
             break;
-        //touche ----------[ Z ]----------  pour bouger l'ego car			
+        //touche ----------[ T ]----------  pour le tilt		
+        case 84:
+            mapView.tilt += 0.3;
+            console.log("tilt + : " + mapView.tilt);
+            break;
+        //touche ----------[ G ]----------  pour le tilt		
+        case 71:
+            if (mapView.tilt > 1) {
+                mapView.tilt -= 0.3;
+            }
+            ;
+            console.log("tilt - : " + mapView.tilt);
+            break;
+        //touche ----------[ Z ]----------  pour afficher et faire disparaitre l'egocar			
         case 90:
             if (!egoEnable) {
                 console.log("convArray2 : " + convArray2.length);
                 increment = 1; // on remet à zeroz
-                triAdd();
+                egoAdd();
                 egoEnable = true;
             }
             else {
@@ -75365,21 +75369,23 @@ const speedContainer = document.getElementById('distance');
 var value1 = document.createElement('pre');
 speedContainer.innerHTML = "";
 value1.textContent = String("vitesses");
-var clickTimer = null;
+/*var clickTimer = null;
+
 function touchStart() {
     if (clickTimer == null) {
         clickTimer = setTimeout(function () {
             clickTimer = null;
             alert("single");
-        }, 500);
-    }
-    else {
+
+        }, 500)
+    } else {
         clearTimeout(clickTimer);
         clickTimer = null;
         alert("double");
+
     }
 }
-touchStart();
+touchStart();*/
 /////////////////////////////fonction de mouvement de camera//////////////////////////
 function startTransition(mapView, location) {
     const startPosition = mapView.camera.position.clone(); //permet le déplacement sur les axes
@@ -75617,8 +75623,8 @@ function getStyleSet2() {
     ];
 }
 const monuments = [
-    ["EIFFELimport", "eiffel", "resources/EiffelTower.fbx", 0.1, [48.858226623375815, 2.2944796063358880], 46],
-    ["OBELISKimport", "obelisk", "resources/obelisk.fbx", 0.08, [48.86547612146255, 2.321130372583866], 63] //,
+    ["EIFFELimport", "eiffel", "resources/EiffelTower.fbx", 0.1, [48.858226623375815, 2.2944796063358880], 46] //, 
+    //["OBELISKimport", "obelisk", "resources/obelisk.fbx", 0.08, [48.86547612146255, 2.321130372583866],63]//,
     //["ARCimport", "arcTriumph", "resources/arcTriomphe.fbx", 0.03, [48.87377930654804, 2.2950247675180435],65]
 ];
 for (var m in monuments) {
