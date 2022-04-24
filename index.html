@@ -55,6 +55,13 @@
 				position: absolute;
 				pointer-events: none;
 				}
+			.Hline2 {
+				width: 100%;
+				height: 87.5%;
+				border-bottom: 1px solid red;
+				position: absolute;
+				pointer-events: none;
+				}
 			.Vline {
 				width: 50%;
 				height: 100%;
@@ -62,13 +69,20 @@
 				position: absolute;
 				pointer-events: none;
 			}
+			.Vline2 {
+				width: 75%;
+				height: 100%;
+				border-right: 1px solid red;
+				position: absolute;
+				pointer-events: none;
+			}
+			
 			 .distance-container {
 				position: absolute;
 				top: 10px;
 				left: 10px;
 				z-index: 1;
 			}
-
 			.distance-container > * {
 				background-color: rgba(0, 0, 0, 0.5);
 				color: #fff;
@@ -84,8 +98,10 @@
 
     <body>
         <script src="three.min.js"></script>
-<!--<div class="Hline"></div>
-<div class="Vline"></div>-->
+<div class="Hline"></div>
+		<div class="Hline2"></div>
+<div class="Vline"></div><!---->
+		<div class="Vline2"></div><!---->
         <canvas id="map"></canvas>
 		<div id="distance" class="distance-container"></div>
 		<div id="my-gui-container"></div>
