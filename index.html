@@ -17,6 +17,8 @@
             body {
                 margin: 0;
                 overflow: hidden;
+				background-color: black;
+				
             }
 
             #map {
@@ -24,7 +26,7 @@
                 border: 0px;
                 left: 0px;
                 width: 100%;
-                height: 100%;
+                height: 442px;
                 overflow: hidden;
                 z-index: -1;
             }
@@ -86,27 +88,95 @@
 			.distance-container > * {
 				background-color: rgba(0, 0, 0, 0.5);
 				color: #fff;
-				font-size: 22px;
-				line-height: 18px;
+				font-size: 16px;
+				font-family:Arial;
+				line-height: 16px;
 				display: block;
 				margin: 5px;
-				padding: 5px 10px;
+				padding: 10px 25px;
+				border-radius: 3px;
+				border:1px solid #fff;
+			}
+			.distance-container2 {
+				position: absolute;
+				bottom: 50px;
+				left: 10px;
+				z-index: 1;
+			}
+			.distance-container2 > * {
+				background-color: rgba(50, 0, 0, 0.5);
+				color: #fff;
+				font-size: 26px;
+				font-family:Arial;
+				line-height: 16px;
+				display: block;
+				margin: 5px;
+				padding: 10px 15px;
 				border-radius: 3px;
 			}
+			.myButton {
+				position: absolute;
+				bottom: 10px;
+				left: 10px;
+				
+				box-shadow:inset 0px 1px 3px 0px #999999;
+				background:linear-gradient(to bottom, rgba(36, 36, 51, 0.3) 5%, rgba(0, 0, 0, 0.3) 100%);
+				background-color: rgba(36, 36, 51, 0.5);
+				
+				border-radius:8px;
+				border:1px solid #fff;
+				display:inline-block;
+				cursor:pointer;
+				color:#ffffff;
+				font-family:Arial;
+				font-size:16px;
+				font-weight:bold;
+				padding:5px 25px;
+				text-decoration:none;
+				text-shadow:0px -1px 0px #000000;
+			}
+			.myButton:hover {
+				background:linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 5%, rgba(36, 36, 51, 0.3) 100%);
+				
+			}
+			.myButton:active {
+				position:absolute;
+				bottom: 9px;
+				left: 11px;
+			}
+	/*		.truc {
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-annotation {
+  font-size: 3em;
+}*/
         </style>
     <script defer src="mapview.bundle.js"></script></head>
 
     <body>
         <script src="three.min.js"></script>
 <div class="Hline"></div>
-		<div class="Hline2"></div>
+		<!--<div class="Hline2"></div>-->
 <div class="Vline"></div><!---->
-		<div class="Vline2"></div><!---->
+		<!--<div class="Vline2"></div>-->
         <canvas id="map"></canvas>
 		<div id="distance" class="distance-container"></div>
-		<div id="my-gui-container"></div>
-
-        <div id="copyrightNotice"></div>
+		<button id="distance2" class="myButton"></button>
 		
+		<div id="my-gui-container"></div>
+		
+		
+        <div id="copyrightNotice"></div>
+		<!--<div class='truc'>
+ 			 <div id='text-annotation' class='text-annotation'>
+ 			</div> 
+		</div>-->
     </body>
 </html>
