@@ -73358,10 +73358,13 @@ var val1 = 0;
 var val2 = 0;
 var prevX = arc[0][1];
 var prevY = arc[0][0];
+console.log("XXXX : " + prevX);
+console.log("YYYY : " + prevY);
 //var prevX = list1[0][1];
 //var prevY = list1[0][0];
-var prevBearing = 25;
-var bearing = 25;
+var prevBearing = 45;
+//var prevBearing = turf.bearing( point1, point2);
+var bearing = 0;
 var increment = 0;
 var convArray2 = arc;
 var convArrayLS2;
@@ -73926,17 +73929,17 @@ const geoPosition = {
     altitude: (_a = CONCORD.altitude) !== null && _a !== void 0 ? _a : 0
 };
 function resizeEgoCar() {
-    const valGeo = { latitude: prevY, longitude: prevX };
+    //console.log("prevY : " + prevY + " --- prevX : " + prevX)
+    const valGeo = { latitude: prevX, longitude: prevY };
     const ratioZoom = mapView.zoomLevel / 20;
     if (egoList[1] !== undefined && egoList[1].anchor !== undefined) {
-        const scaleFactor = (mapView.targetDistance / 60000 * ratioZoom);
-        const scaleFactor2 = (mapView.targetDistance / 500 * ratioZoom) / 60;
-        const scaleFactor3 = (mapView.targetDistance / 300 * ratioZoom) / 4;
-        const scaleFactor4 = (mapView.targetDistance / 500 * ratioZoom) / 160;
+        //console.log("egoList[1].anchor : " + egoList[1].anchor.longitude + " -- " + egoList[1].anchor.latitude)
+        //const scaleFactor = (mapView.targetDistance / 60000 * ratioZoom);
+        //const scaleFactor2 = (mapView.targetDistance / 500 * ratioZoom)/60;
+        //const scaleFactor3 = (mapView.targetDistance / 300 * ratioZoom)/4;
+        const scaleFactor4 = (mapView.targetDistance / 500 * ratioZoom) / 80;
         if (egoList[1].scale.x !== scaleFactor4) {
-            //console.log("scaleFactor : " + scaleFactor);
             egoList[1].scale.set(scaleFactor4, scaleFactor4, scaleFactor4);
-            //egoList[1].translateY(100);
             //egoList[1].translateY(100);
             //egoList[0].scale.set(scaleFactor3, scaleFactor3, scaleFactor3);//////////////////////LA
             //meshTriangle.scale.set(scaleFactor/4, scaleFactor/4, scaleFactor);
@@ -74022,7 +74025,7 @@ function addTriangle(mapView) {
 }
 ;
 function addEgoOnMap(mapView) {
-    const sizeCube10 = 0.0134; // o.3 R5
+    const sizeCube10 = 0.3; // o.3 R5 -- 0.0134
     // const figureGeoPosition = new GeoCoordinates( 48.86562466026018, 2.3217665271639305);
     const clock10 = new THREE.Clock();
     let egoAnchor;
@@ -74038,11 +74041,12 @@ function addEgoOnMap(mapView) {
             //child.rotateY(THREE.Math.degToRad(-25));
             child.castShadow = true;
             child.receiveShadow = true;
+            child.rotateZ(THREE.Math.degToRad(0));
             //child.translateY(200);
             /*if ( child.isMesh ) {
 
                 console.log( child.geometry.attributes.uv );
-                child.material = new THREE.MeshPhysicalMaterial( {
+                child.material = new THREE.MeshPhongMaterial( {
                 //color: "#f00",
                 //emissive: "#888",
                 transparent: true,
@@ -74053,17 +74057,19 @@ function addEgoOnMap(mapView) {
 
             }*/
         });
-        egoAnchor.renderOrder = 10000;
+        egoAnchor.renderOrder = 0.1;
         //egoAnchor.rotateZ(THREE.Math.degToRad(65));
         egoAnchor.rotateX(THREE.Math.degToRad(90));
-        egoAnchor.rotateY(THREE.Math.degToRad(-25));
+        egoAnchor.rotateY(THREE.Math.degToRad(-35));
         egoAnchor.scale.set(sizeCube10, sizeCube10, sizeCube10);
         egoAnchor.name = "circle";
         egoAnchor.anchor = BaseGEOCoord;
         //egoAnchor.positions.set(0, 100, 0);
-        //figure8.material = new THREE.MeshPhysicalMaterial({ color: "#ff0000"})
+        egoAnchor.material = new THREE.MeshBasicMaterial({ color: "#ff0000" });
         egoAnchor.overlay = false;
         egoAnchor.transparent = true;
+        var axes = new THREE.AxesHelper(1000); // this will be on top
+        egoAnchor.add(axes);
         mapView.mapAnchors.add(egoAnchor);
         egoList[1] = egoAnchor;
     };
@@ -74120,13 +74126,14 @@ function egoRemove() {
     for (var w in egoList) {
         mapView.mapAnchors.remove(egoList[w]);
     }
+    mapView.removeEventListener(harp_mapview_1.MapViewEventNames.Update, resizeEgoCar);
     egoList = [];
 }
 ;
 function egoAdd() {
     //figure8 = addCar(mapView);
-    mapView.addEventListener(harp_mapview_1.MapViewEventNames.Update, resizeEgoCar);
     egoAnchor = addEgoOnMap(mapView);
+    mapView.addEventListener(harp_mapview_1.MapViewEventNames.Update, resizeEgoCar);
     //meshTriangle = addTriangle(mapView);	
     /**/
 }
@@ -74142,10 +74149,10 @@ exports.map = initializeMapView("map");
 var valAngleCar = 0;
 function moveEgo() {
     increment += speed;
-    val1 = arc[increment][0];
-    val2 = arc[increment][1];
+    val2 = arc[increment][0];
+    val1 = arc[increment][1];
     //egoList[0].anchor = new GeoCoordinates(val2, val1);//////////////////////////////////////LA
-    egoList[1].anchor = new harp_geoutils_1.GeoCoordinates(val2, val1); //-0.00022
+    egoList[1].anchor = new harp_geoutils_1.GeoCoordinates(val1, val2); //-0.00022
     //meshTriangle.anchor = new GeoCoordinates(val2, val1);
     //egoList[2].anchor = new GeoCoordinates(val2, val1);
     var point1 = turf.point([prevX, prevY]);
@@ -74153,21 +74160,23 @@ function moveEgo() {
     //console.log("point1A : " + prevY + " --- point1B : " + prevX);
     //console.log("point2A : " + val2 + " --- point2B : " + val1)
     var bearing = turf.bearing(point1, point2);
-    valAngleCar = THREE.Math.degToRad(prevBearing - bearing);
+    valAngleCar = THREE.Math.degToRad(bearing - prevBearing);
     //meshTriangle.rotateZ(THREE.Math.degToRad(bearing-prevBearing));
     //egoList[2].rotateZ(THREE.Math.degToRad(prevBearing-bearing));
     //egoList[0].rotateZ(THREE.Math.degToRad(prevBearing-bearing));////////////////////////////////LA
-    egoList[1].rotateY(THREE.Math.degToRad(prevBearing - bearing));
+    egoList[1].rotateY(THREE.Math.degToRad(bearing - prevBearing));
     //egoAnchor.rotateY(THREE.Math.degToRad((bearing-prevBearing)));
     prevX = val1;
     prevY = val2;
-    prevBearing = bearing;
     ////calcul de la distance restante//////////////
     convArray2 = convArray2.slice(1, convArray2.length);
     var convArrayLS2 = turf.lineString(convArray2);
     var convArrayDist = turf.lineDistance(convArrayLS2);
     value.textContent = String(convArrayDist.toFixed(2) + " km");
     value1.textContent = String("speed x " + speed);
+    //value3.textContent = String("angle : " + valAngleCar);
+    value3.textContent = String("angle : " + THREE.Math.degToRad(bearing - prevBearing));
+    prevBearing = bearing;
     //	distanceContainer.appendChild(value);
     //	speedContainer.appendChild(value1);
     if (increment < steps) {
@@ -74215,7 +74224,7 @@ function slowEgo() {
 }
 function rotateAroundEgoCar() {
     const optionsCarFollow = {
-        target: new harp_geoutils_1.GeoCoordinates(val2 /*+0.00060*/, val1 /*-0.00011*/),
+        target: new harp_geoutils_1.GeoCoordinates(val1 /*+0.00060*/, val2 /*-0.00011*/),
         //tilt: 45,
         //zoomLevel: 18.5,
         //heading: null,
@@ -74224,7 +74233,7 @@ function rotateAroundEgoCar() {
     };
     mapView.addEventListener(harp_mapview_1.MapViewEventNames.AfterRender, () => {
         if (rota) {
-            optionsCarFollow.target = new harp_geoutils_1.GeoCoordinates(val2 /*+0.00060*/, val1 /*-0.00011*/);
+            optionsCarFollow.target = new harp_geoutils_1.GeoCoordinates(val1 /*+0.00060*/, val2 /*-0.00011*/);
             mapView.lookAt(optionsCarFollow);
             mapView.heading = (mapView.heading + optionsCarFollow.headingSpeed) % 360;
             mapView.update();
@@ -74242,7 +74251,7 @@ var memHeading = 0;
 /////////////////////////////fonction lorsqu'on clique sur "f"/////////////////
 function followEgoCar() {
     const optionsCarFollow = {
-        target: new harp_geoutils_1.GeoCoordinates(val2 /*+0.00060*/, val1 /*-0.00011*/),
+        target: new harp_geoutils_1.GeoCoordinates(val1 /*+0.00060*/, val2 /*-0.00011*/),
         //tilt: 45,
         //zoomLevel: zoomLevFollowCar,
         //heading: memHeading,
@@ -74257,7 +74266,7 @@ function followEgoCar() {
             //optionsR5.heading += THREE.Math.radToDeg(-valAngleCar);
             //console.log("memHeading : " + memHeading);
             //console.log("angle : " + THREE.Math.radToDeg(-valAngleCar))
-            optionsCarFollow.target = new harp_geoutils_1.GeoCoordinates(val2 /*+0.00060*/, val1 /*-0.00011*/);
+            optionsCarFollow.target = new harp_geoutils_1.GeoCoordinates(val1 /*+0.00060*/, val2 /*-0.00011*/);
             mapView.heading += THREE.Math.radToDeg(-valAngleCar);
             //mapView.camera.position.x = -100; 
             mapView.lookAt(optionsCarFollow);
@@ -74278,7 +74287,34 @@ function clickF() {
         follow = false;
     }
 }
+//function mouseWheel(event) {
+//  console.log(event.delta);
+//  //move the square according to the vertical scroll amount
+//  //pos += event.delta;
+//  //uncomment to block page scrolling
+//  //return false;
+//}
+const MAX_ZOOM_OUT = 0.1;
+//const textElement = document.getElementById('text-annotation');
+let zoom = 1;
+function renderText() {
+    //textElement.innerText = 'Zoom: ' + zoom.toFixed(4);
+    console.log("wheel mouse : " + zoom.toFixed(4));
+}
+;
+function onMouseWheel(e) {
+    const delta = (e.wheelDelta && e.wheelDelta / 40) || -e.detail;
+    zoom = Math.max(MAX_ZOOM_OUT, zoom + (delta / 100));
+    //e.preventDefault();
+    renderText();
+}
+document.addEventListener('wheel', onMouseWheel);
+document.addEventListener('DOMMouseScroll', onMouseWheel); // Firefox
+renderText();
 //////////////////////////FONCTIONS CLAVIER///////////////////////////
+/*window.WheelEvent = (ev: WheelEvent) => {
+    console.log("scroool");
+}*/
 window.ontouchend = (ev) => {
     const oldLocation = locations[currentLocation];
     currentLocation++;
@@ -74384,6 +74420,8 @@ window.onkeydown = (ev) => {
                 //gui.visible = true;
                 distanceContainer.appendChild(value);
                 speedContainer.appendChild(value1);
+                angleContainer.appendChild(value3);
+                but1Container.appendChild(value2);
                 displayStat = true;
             }
             else if (displayStat) {
@@ -74391,6 +74429,8 @@ window.onkeydown = (ev) => {
                 removeGuiElements();
                 distanceContainer.removeChild(value);
                 speedContainer.removeChild(value1);
+                angleContainer.removeChild(value3);
+                but1Container.removeChild(value2);
                 displayStat = false;
             }
             break;
@@ -74460,6 +74500,7 @@ window.onkeydown = (ev) => {
                 //follow = true;
                 stopEgo();
                 egoStop = false;
+                //mapView.removeEventListener(MapViewEventNames.Update, resizeEgoCar);
                 action.stop();
                 speed = 1;
             }
@@ -74495,8 +74536,8 @@ window.onkeydown = (ev) => {
                 egoEnable = true;
             }
             else {
-                prevBearing = 25;
-                bearing = 25;
+                prevBearing = 45;
+                bearing = 45;
                 convArray2 = arc;
                 increment = 0;
                 egoRemove();
@@ -74527,16 +74568,8 @@ window.onkeydown = (ev) => {
 };
 let currentLocation = 0;
 const locations = [
-    /*				{
-        // arc triomphe arriere
-        target: new GeoCoordinates(48.853646831055556, 2.347297668457031),
-        tilt: 0,
-        heading: 0,
-        distance: 5000000,
-        valeur: 6, // ancien 1
-    },*/
     {
-        // espace
+        // dessus haut
         target: BaseGEOCoord,
         tilt: 10,
         heading: 0,
@@ -74544,7 +74577,7 @@ const locations = [
         valeur: 2, // ancien 1
     },
     {
-        // notre dame
+        // dessus trajet
         target: BaseGEOCoord,
         tilt: 10,
         heading: 0,
@@ -74552,7 +74585,7 @@ const locations = [
         valeur: 1, // ancien 1
     },
     {
-        // arc triomphe arriere
+        // arriere egocar
         target: BaseGEOCoord,
         tilt: 65.8,
         heading: -35,
@@ -74560,7 +74593,7 @@ const locations = [
         valeur: 1, // ancien 1
     },
     {
-        // arc triomphe kleber
+        // zoom egocar
         target: BaseGEOCoord,
         tilt: 65.8,
         heading: -35,
@@ -74609,6 +74642,14 @@ const speedContainer = document.getElementById('distance');
 var value1 = document.createElement('pre');
 speedContainer.innerHTML = "";
 value1.textContent = String("vitesses");
+const angleContainer = document.getElementById('distance');
+var value3 = document.createElement('pre');
+angleContainer.innerHTML = "";
+value3.textContent = String("angle");
+const but1Container = document.getElementById('distance2');
+var value2 = document.createElement('pre');
+but1Container.innerHTML = "";
+value2.textContent = String("bouton 1");
 /*var clickTimer = null;
 
 function touchStart() {
@@ -74678,20 +74719,28 @@ var geojsonVert = {
         }]
 };
 ////////////////////////////ligne verte sur double click///////////////////////////
-window.addEventListener("dblclick", (evt) => {
+/*	window.addEventListener("dblclick", (evt) => {
     async function getLineSaclay2() {
         //res5 = await fetch("resources/park2.geojson");
         //data5 = await res5.json();
-        const [data6] = await Promise.all([fetch("resources/map-maillot1.geojson").then((response) => response.json())]);
-        /*		convArray2 = convArray2.slice(1, convArray2.length)
-        var convArrayLS2 = turf.lineString(convArray2);
-        var convArrayDist = turf.lineDistance(convArrayLS2);*/
+        
+        
+        const [data6] = await Promise.all([fetch("resources/map-maillot1.geojson").then((response) => response.json())])
+        
+    //		convArray2 = convArray2.slice(1, convArray2.length)
+    //var convArrayLS2 = turf.lineString(convArray2);
+    //var convArrayDist = turf.lineDistance(convArrayLS2);
         var path6;
+        
+        
         listData6 = data6.features[0].geometry.coordinates;
+
         var array6 = turf.lineString(listData6);
         var length6 = turf.lineDistance(array6); // retourne la distance total du trajet du json
+        
         var curved6 = turf.bezier(array6, { sharpness: 0.85, resolution: 5000 });
         var lengthcurved = turf.lineDistance(curved6);
+        
         for (var k = 0; k < lengthcurved; k += lengthcurved / animationDuration) {
             var segment7 = turf.along(array6, k);
             newlistDataCurved6.push(segment7.geometry.coordinates);
@@ -74702,33 +74751,35 @@ window.addEventListener("dblclick", (evt) => {
             newlistData6.push(segment6.geometry.coordinates);
         }
         //long = turf.lineDistance(path6);
-        console.log("------>distance TOTALE length6 : " + length6);
+        console.log("------>distance TOTALE length6 : " + length6)
         //console.log("------>longueur de la liste array6: " + array6.length)
-        console.log("------>distance TOTALE lengthcurved : " + lengthcurved);
+        console.log("------>distance TOTALE lengthcurved : " + lengthcurved)
         //console.log("------>longueur de la liste lengthcurved : " + curved.length)
-        console.log("------>longueur de newlistData6 : " + newlistData6.length); //longueur de la nouvelle liste
-        console.log("------>longueur de newlistDataCurved6 : " + newlistDataCurved6.length); //longueur de la nouvelle liste
+        console.log("------>longueur de newlistData6 : " + newlistData6.length)//longueur de la nouvelle liste
+        console.log("------>longueur de newlistDataCurved6 : " + newlistDataCurved6.length)//longueur de la nouvelle liste
         //console.log("------>contenu de newlistData6 : " + newlistData6)// contenu de la nouvelle liste
         //const pathDistance = 20000;
         console.log("------> ");
-        const dataProvider = new harp_vectortile_datasource_1.GeoJsonDataProvider("saclay", data6);
-        const geoJsonDataSource5 = new harp_vectortile_datasource_1.VectorTileDataSource({
-            dataProvider,
-            name: "saclay",
-            styleSetName: "geojson",
-            addGroundPlane: false,
+        
+        const dataProvider = new GeoJsonDataProvider("saclay", data6);
+        const geoJsonDataSource5 = new VectorTileDataSource({
+        dataProvider,
+        name: "saclay",
+        styleSetName: "geojson",
+        addGroundPlane: false,
         });
+        
         let start;
         var num = 0;
         var longueurAnimaLine = 0;
         function frame(time) {
-            if (!start)
-                start = time;
-            const animationPhase = ((time - start) / animationDuration);
+            if (!start) start = time;
+            const animationPhase = ((time - start)/animationDuration);
             if (animationPhase > 1) {
                 return;
             }
             //
+            
             path6 = turf.lineString(newlistData6);
             long = turf.lineDistance(path6);
             newlistData6 = newlistData6.slice(1, newlistData6.length);
@@ -74739,88 +74790,100 @@ window.addEventListener("dblclick", (evt) => {
                 lng: alongPath[0],
                 lat: alongPath[1]
             };
-            //////////////////////////////mettre le style ici/////////////////////////
+//////////////////////////////mettre le style ici/////////////////////////
             console.log("time : " + (time - start));
             console.log(" ");
             console.log("---animationPhase : " + animationPhase);
             console.log("---taille de la newlistData6 : " + newlistData6.length);
             console.log("---etape : " + num);
             console.log("---longueur du trajet : " + long + "km");
-            console.log("---lngLat" + num + " : " + lngLat.lng + ", " + lngLat.lat);
+            console.log("---lngLat" + num +" : " + lngLat.lng + ", " + lngLat.lat);
             geojsonVert.features[0].geometry.coordinates.push([lngLat.lat, lngLat.lng]);
             //console.log("---geojsonVert" + num + " : " + geojsonVert.features[0].geometry.coordinates);
             //var distVert = turf.lineDistance(turf.lineString(geojsonVert))
-            longueurAnimaLine = (long / length6 * 15.95) - 15;
-            console.log("-----> length6 : " + longueurAnimaLine);
+            longueurAnimaLine = (long/length6 *15.95) - 15;
+            console.log("-----> length6 : " + longueurAnimaLine)
             num += 1;
             //mapView.update();
             //if (listData6.length >0) {
             requestAnimationFrame(frame);
-            //	}
+    //	}
         }
-        requestAnimationFrame(frame); /**/
+        requestAnimationFrame(frame);
+        
         //const obj = JSON.parse('[geojsonVert]')
+        
+
         //pinRoute = await data6.features[0].geometry.coordinates;//pour connaitre le nombre de point/ligne dans le geojson
+
         //console.log(" aaa : " + long);
         //console.log(" bbb : " + pinRoute.length);
         //var intern = JSON.parse("resources/park2.geojson")
         //console.log(" ccc : " + data6);
+        
+        
+
         await mapView.addDataSource(geoJsonDataSource5);
-        await geoJsonDataSource5.setTheme({
+        
+                await geoJsonDataSource5.setTheme({
             styles: [
                 {
                     styleSet: "geojson",
                     when: "$geometryType == 'line'",
-                    id: "saclay",
-                    technique: "solid-line",
-                    renderOrder: 10000,
-                    attr: {
-                        color: "#fff",
-                        opacity: 1,
-                        metricUnit: "Pixel",
-                        drawRangeStart: 0,
-                        drawRangeEnd: 1,
-                        lineWidth: 14,
-                        outlineColor: "rgba(100,100,100,0.3)",
-                        fadeNear: 0,
-                        fadeFar: 1,
-                        outlineWidth: 4,
-                        dashColor: "blue",
-                        dashSize: 10,
-                        gapSize: 20,
-                    }
+                id: "saclay",
+                technique: "solid-line",
+                renderOrder: 10000,
+                
+                attr: {
+                    color: "#fff", // bleu turquoise #19caff
+                    opacity: 1,
+                    metricUnit: "Pixel",
+                    drawRangeStart: 0,
+                    drawRangeEnd: 1,
+                    lineWidth: 14,
+                    outlineColor: "rgba(100,100,100,0.3)",
+                    fadeNear: 0,
+                    fadeFar: 1,
+                    outlineWidth: 4,
+                    dashColor: "blue",
+                    dashSize: 10,
+                    gapSize: 20,
+                    
                 }
-            ]
-        });
-        dataProvider.onDidInvalidate(() => {
-            mapView.update();
-        });
+
+                }]});
+               dataProvider.onDidInvalidate(() => {
+                   mapView.update();
+               });
+
+
         //setInterval(animate, 2000);
+
         //return mapView;
-        /*const theme: Theme = {
-            styles: {
-              geojson: getStyleSet()
-            },
-        };*/
-        //		let i = 0;
-        //        const timer = setInterval(() => {
-        //            if (i < pinRoute.length) {
-        //                //data5.features[0].geometry.coordinates.push(pinRoute[i]);
-        //               // mapView.dataSources('trace').setData(data5);
-        //                //map.panTo(coordinates[i]);
-        //				console.log("i : " + i)
-        //                i++;
-        //            } else {
-        //                window.clearInterval(timer);
-        //            }
-        //        }, 10);
+                
+        //const theme: Theme = {
+            //styles: {
+              //geojson: getStyleSet()
+            //},
+        //};
+//		let i = 0;
+//        const timer = setInterval(() => {
+//            if (i < pinRoute.length) {
+//                //data5.features[0].geometry.coordinates.push(pinRoute[i]);
+//               // mapView.dataSources('trace').setData(data5);
+//                //map.panTo(coordinates[i]);
+//				console.log("i : " + i)
+//                i++;
+//            } else {
+//                window.clearInterval(timer);
+//            }
+//        }, 10);
         //geoJsonDataSource5.setTheme(geojson);
         mapView.update();
-    }
-    ;
+    };
     getLineSaclay2();
-    //moveLine();
-});
+        //moveLine();
+    }); */
 function moveLine() {
     ajout += 1;
     console.log(" num : " + ajout);
